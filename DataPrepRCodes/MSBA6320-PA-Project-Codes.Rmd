@@ -1,0 +1,766 @@
+---
+title: "MSBA 6420 - Predictive Analytics Project"
+author: "Lavanya Basava Raju, Ananya Mishra, Xiurong Lin, Ryan Borowicz"
+date: "December 5, 2016"
+output: html_document
+---
+
+## SETUP
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require("knitr")
+opts_knit$set(root.dir = "C:/Users/Lavanya/Google Drive/Group Project/Case1-MSRA/Training/")
+library(dplyr) 
+library(tidyr)
+library(data.table)
+library(ggplot2)
+library(magrittr)
+library(lubridate)
+library(fastcluster)
+library(reshape2)
+
+folder="C:/Users/Lavanya/Google Drive/Group Project/Case1-MSRA/Training/"
+setwd(folder)
+```
+
+## BUSINESS UNDERSTANDING:
+Overall Goal:
+* Part 1. Predict who will get pneumonia & mrsa
+* Part 2. Finding the people who are likely to contract nosocomial pneumonia, and figuring out how much it costs to treat them for this infection. We can't give you the rule to create target labels in Part 2, since a) there isn't a perfect one, and b) creating a good one is part of the contest.
+
+MRSA & Pneumonia:
+* MRSA is represented by ICD9 code V09.0. It can be identified either in the hospital file using one of the ICD9 fields, or in the patient conditions file, which lists all conditions for which a patient was diagnosed for that year.
+* There is a cost of preventive care that you can determine from the prescription database. It generally requires the antibiotic, Vancomycin or the antibiotic, Zyvox (linezolid). Then there is the added cost of MRSA, which is not uniform; rather, it depends upon the patient condition and the patient procedures performed. You will need to estimate this added cost from the data. Both emergency and elective patients have some risk of MRSA. The hospital will want to use the preventive treatment if it costs less than the added cost of MRSA.
+* There are 971 patients in the conditions data set with at least one ICD9CODX value between 480 and 486. In the hospital data set, there are 278 unique DUPERSIDs with at least one of Icd1x, Icd2x, Icd3x, and Icd4x between 480 and 486. (These 278 patients all appear to be in the conditions data base as well, with a code of pneumonia for at least one record.)
+
+Other Information:
+* File RX0304 is CSV with quoted fields if a comma is part of the field - make sure we covered this
+
+* 9 - Not ascertained - not NA
+* 8 - Unknown - NA
+* 7 - Refused to Answer - not NA
+* 1 - Inapplicable - convert to NA
+
+## CONDITIONS DATASET
+* not one to one with hospital data - conditions without associated record in hospital table - ex. 20003019 w/6 condition rows - only 1 hospital stay for 1 of 4 conditions - contains many more patients than hospitals dataset
+* not one to one with rx dataset - rx could have medications for 1 of many conditions
+
+```{r CONDITIONS}
+conditions <- read.csv("conditions0304.csv", header = TRUE,na.strings = c("-8","-1"))
+
+#Change -9 ICD values to ND - Different from NA - these are conditions that can't be accurately diagnosed at hospital so they are not given an ICD code?
+conditions$ICD9CODX <- as.character(conditions$ICD9CODX)
+conditions$ICD9CODX[conditions$ICD9CODX == "-9"] <- 'ND'
+conditions$ICD9CODX <- as.factor(conditions$ICD9CODX)
+
+#convert year to factor
+conditions$year <- as.factor(conditions$year)
+
+#check for missing values & duplicates
+str(conditions)
+summary(conditions)  # missing values in icd codes
+
+#remove missing values
+conditions %<>% filter(!is.na(ICD9CODX)) 
+summary(conditions)
+
+colnames(conditions)
+# "DUID"     "DUPERSID" "ICD9CODX" "year"
+nrow(conditions)
+conditions_unique_records <- conditions %>% group_by(DUID, DUPERSID, ICD9CODX, year) %>% summarize(count=n())
+nrow(conditions_unique_records)   # table has duplicates
+conditions_2 <- conditions_unique_records # conditions datasets without duplicates
+conditions_2_unique_records <- conditions_2 %>% group_by(DUPERSID, ICD9CODX, year) %>% summarize(count=n())
+nrow(conditions_2_unique_records) # PK - DUPERSID, ICD9CODX, year
+rm(conditions_unique_records)
+rm(conditions_2_unique_records)
+
+#Remove DUID - info already captured in DUPERSID
+myvars <- c("DUPERSID", "ICD9CODX", "year")
+conditions_3 <- conditions_2[myvars]
+
+rm(conditions,conditions_2)
+summary(conditions_3)
+```
+
+## DEMOGRAPHICS DATASET
+```{r DEMOGRAPHICS}
+demographics <- read.csv("demographics0304.csv", header = TRUE,,na.strings = c("-8","-1"))
+
+str(demographics)
+#DUID & PID will be removed - covered by DUPERSID
+#convert DOBMM and DOBYY to factor
+demographics$DOBMM <- as.factor(demographics$DOBMM)
+demographics$DOBYY <- as.factor(demographics$DOBYY)
+
+#convert sex to factor
+demographics$SEX[demographics$SEX == 1] <- 'Male'
+demographics$SEX[demographics$SEX == 2] <- 'Female'
+demographics$SEX <- as.factor(demographics$SEX)
+
+#RACEX
+demographics$RACEX[demographics$RACEX == 1] <- 'White'
+demographics$RACEX[demographics$RACEX == 2] <- 'Black'
+demographics$RACEX[demographics$RACEX == 3] <- 'Native'
+demographics$RACEX[demographics$RACEX == 4] <- 'Asian'
+demographics$RACEX[demographics$RACEX == 5] <- 'Hawaiian'
+demographics$RACEX[demographics$RACEX == 6] <- 'Multiple'
+
+#use information from other race columns to classify - RACEAX (asian), RACEBX (black), RACEWX (white), RACETHNX, HISPANX (hispanic), HISPCAT (didn't break out hispanic group by category (i.e. cuban, mexican, dominican)
+#re-classify hispanics into own category - initially marked on survey as white category
+demographics$RACEX[demographics$RACEX == 'White' & demographics$HISPANX == 1] <- 'Hispanic'
+demographics$RACEX <- as.factor(demographics$RACEX)
+
+#education year - remove or group into college, high-school, non high-school - values don't seem to be very trustworthy
+#changing to 0 probably isn't accurate - more likely NA
+demographics$EDUCYEAR[is.na(demographics$EDUCYEAR)] <- 0
+demographics$EDUCYEAR[demographics$EDUCYEAR == -9] <- 0
+demographics$EDUCYEAR[demographics$EDUCYEAR == -7] <- 0
+demographics$EDUCYEAR <- as.factor(demographics$EDUCYEAR)
+
+#convert year to factor
+demographics$Year <- as.factor(demographics$Year)
+
+#marry
+demographics$marry[demographics$marry == 1] <- 'Married'
+demographics$marry[demographics$marry == 2] <- 'Widowed'
+demographics$marry[demographics$marry == 3] <- 'Divorced'
+demographics$marry[demographics$marry == 4] <- 'Separated'
+demographics$marry[demographics$marry == 5] <- 'Never Married'
+demographics$marry[demographics$marry == 6] <- 'Under16'
+
+#convert -7, -9, NA values to Never Married
+demographics$marry[demographics$marry == -7] <- 'Never Married'
+demographics$marry[demographics$marry == -9] <- 'Never Married'
+demographics$marry[is.na(demographics$marry)] <- 'Never Married'
+
+demographics$marry <- as.factor(demographics$marry)
+#income - alot of 0's - have to be careful using this variable - probably not that accurate
+#convert negative income values to positive - assuming a misplaced negative sign
+demographics$income <- abs(demographics$income)
+
+#poverty - doesn't correlate with income - not sure what this is representing - remove
+demographics$poverty[demographics$poverty == 1] <- 'Poor'
+demographics$poverty[demographics$poverty == 2] <- 'Nearpoor'
+demographics$poverty[demographics$poverty == 3] <- 'Lowincome'
+demographics$poverty[demographics$poverty == 4] <- 'Midincome'
+demographics$poverty[demographics$poverty == 5] <- 'Highincome'
+demographics$poverty <- as.factor(demographics$poverty)
+
+str(demographics)
+summary(demographics)
+colnames(demographics)
+# "DUID"     "PID"      "DUPERSID" "DOBMM"    "DOBYY"    "SEX"      "RACEX"    "RACEAX"   "RACEBX"   "RACEWX"  
+# "RACETHNX" "HISPANX"  "HISPCAT"  "EDUCYEAR" "Year"     "marry"    "income"   "poverty" 
+
+#keep only important variables
+myvars <- c("DUPERSID", "DOBMM", "DOBYY", "SEX", "RACEX", "EDUCYEAR", "Year", "marry", "income")
+demographics_2 <- demographics[myvars]
+
+nrow(demographics_2)
+demographics_unique_records <- demographics_2 %>% group_by(DUPERSID, Year) %>% summarize(count=n())
+nrow(demographics_unique_records)   # PK - DUPERSID, Year
+rm(demographics_unique_records)
+
+colnames(demographics_2) <- c(
+"DUPERSID", "DOBMM", "DOBYY", "SEX", "RACEX", "EDUCYEAR", "year", "marry", "income")
+
+rm(demographics)
+summary(demographics_2)
+```
+
+## HOSPITAL DATASET
+
+* 9 - Not ascertained - not NA
+* 8 - Unknown - NA
+* 7 - Refused to Answer - not NA
+* 1 - Inapplicable - convert to NA
+
+DUPERSID	PERSON ID (DUID + PID)
+
+
+Icd1x	Primary diagnosis
+Icd2x	Secondary diagnosis
+Icd3x	Secondary diagnosis
+Icd4x	Secondary diagnosis
+
+ANYOPER	Any operations or surgeries performed
+Pro1x	Primary procedure
+Pro2x	Secondary procedure
+
+ERHEVIDX	Event ID for corresponding emergency room visit
+EMERROOM	Did stay begin with emergency room visit?
+RSNINHOS	Reason entered hospital
+SPECCOND	Hospital stay related to condition
+NUMNIGHT	Number of nights stayed at provider
+NUMNIGHX	# of nights in hospital-edited/imputed
+DSCHPMED	Medicines prescribed at discharge
+
+VAPLACE	VA Facility flag
+
+Mdpayment	Physician reimbursement
+Mdtotal	Total physician cost
+Fcpayment	Facility payment
+Fctotal	Total facility cost
+Totalcharge	Total charges
+Totalexpenditure	Total reimbursement 
+
+```{r HOSPITAL}
+hospital <- read.csv("hospital0304.csv", header = TRUE, sep=",", na.strings = '.')
+str(hospital)
+summary(hospital)
+
+
+#ERHEVIDX - what does -1 mean vs blank?
+#emergency room values not consistent - event id's where emergency room = 2(no)
+#if there is an emergency event id but emerroom=2(no), count is as false alarm - not emergency room stay - imputed nights should be changed to 0 for these records
+#bad data - remove
+
+hospital$EMERROOM[hospital$EMERROOM == 1] <- 1
+hospital$EMERROOM[hospital$EMERROOM == 2] <- 0
+hospital$EMERROOM[is.na(hospital$EMERROOM)] <- 0
+hospital$EMERROOM <- ifelse(hospital$EMERROOM < 0,0,hospital$EMERROOM)
+hospital$EMERROOM <- ifelse(hospital$EMERROOM > 1,0,hospital$EMERROOM)
+
+#icd values - convert -9 to nd
+hospital$icd1x <- as.character(hospital$icd1x)
+hospital$icd1x[hospital$icd1x == "-9"] <- 'ND'
+hospital$icd1x[hospital$icd1x == "-1"] <- 'NA'
+hospital$icd1x <- as.factor(hospital$icd1x)
+
+hospital$icd2x <- as.character(hospital$icd2x)
+hospital$icd2x[hospital$icd2x == "-9"] <- 'ND'
+hospital$icd2x[hospital$icd2x == "-1"] <- 'NA'
+hospital$icd2x <- as.factor(hospital$icd2x)
+
+hospital$icd3x <- as.character(hospital$icd3x)
+hospital$icd3x[hospital$icd3x == "-9"] <- 'ND'
+hospital$icd3x[hospital$icd3x == "-1"] <- 'NA'
+hospital$icd3x <- as.factor(hospital$icd3x)
+
+hospital$icd4x <- as.character(hospital$icd4x)
+hospital$icd4x[hospital$icd4x == "-9"] <- 'ND'
+hospital$icd4x[hospital$icd4x == "-1"] <- 'NA'
+hospital$icd4x <- as.factor(hospital$icd4x)
+
+#procedure values
+hospital$pro1x <- as.character(hospital$pro1x)
+hospital$pro1x[hospital$pro1x == "-9"] <- 'ND'
+hospital$pro1x[hospital$pro1x == "-1"] <- 'NA'
+hospital$pro1x <- as.factor(hospital$pro1x)
+
+hospital$pro2x <- as.character(hospital$pro2x)
+hospital$pro2x[hospital$pro2x == "-9"] <- 'ND'
+hospital$pro2x[hospital$pro2x == "-1"] <- 'NA'
+hospital$pro2x <- as.factor(hospital$pro2x)
+
+#nights - need to decide how to handle this
+#use NUMNIGHT if not negative, use NUMNIGHX (imputed value) if negative
+#what does -1,-7,-8,-9 mean? Different than blank?
+hospital$NUMNIGHX <- as.integer(hospital$NUMNIGHX)
+hospital$NUMNIGHT <- as.integer(hospital$NUMNIGHT)
+hospital$num_nights = ifelse(hospital$NUMNIGHT < 0,hospital$NUMNIGHX,hospital$NUMNIGHT)
+
+#Hospital stay related to condition?
+#what does -1,-7,-8,-9 mean? Different than blank?
+#change na's to no?
+hospital$SPECCOND[hospital$SPECCOND == 1] <- 1
+hospital$SPECCOND[hospital$SPECCOND == 2] <- 0
+hospital$SPECCOND[hospital$SPECCOND == -1] <- 0
+hospital$SPECCOND[hospital$SPECCOND == -7] <- 0
+hospital$SPECCOND[hospital$SPECCOND == -8] <- 0
+hospital$SPECCOND[hospital$SPECCOND == -9] <- 0
+hospital$SPECCOND[is.na(hospital$SPECCOND)] <- 0
+hospital$SPECCOND <- ifelse(hospital$SPECCOND < 0,0,hospital$SPECCOND)
+hospital$SPECCOND <- ifelse(hospital$SPECCOND > 1,0,hospital$SPECCOND)
+hospital$SPECCOND <- as.numeric(hospital$SPECCOND)
+
+#Reason entered hospital
+#what does -1,-7,-8,-9 mean? Different than blank?
+#change na's to other?
+hospital$RSNINHOS[hospital$RSNINHOS == 1] <- 'Surgery'
+hospital$RSNINHOS[hospital$RSNINHOS == 2] <- 'Treatment'
+hospital$RSNINHOS[hospital$RSNINHOS == 3] <- 'Diagnostic'
+hospital$RSNINHOS[hospital$RSNINHOS == 4] <- 'Babybirth'
+hospital$RSNINHOS[hospital$RSNINHOS == 5] <- 'Babyprebirth'
+hospital$RSNINHOS[hospital$RSNINHOS == 91] <- 'Other'
+hospital$RSNINHOS[is.na(hospital$RSNINHOS)] <- 'Other'
+hospital$RSNINHOS[hospital$RSNINHOS == -1] <- 'Other'
+hospital$RSNINHOS[hospital$RSNINHOS == -7] <- 'Other'
+hospital$RSNINHOS[hospital$RSNINHOS == -8] <- 'Other'
+hospital$RSNINHOS[hospital$RSNINHOS == -9] <- 'Other'
+hospital$RSNINHOS <- as.factor(hospital$RSNINHOS)
+
+#Any operations or surgeries performed
+#what does -1,-7,-8,-9 mean? Different than blank?
+#change na's to no?
+hospital$ANYOPER[hospital$ANYOPER == 1] <- 1
+hospital$ANYOPER[hospital$ANYOPER == 2] <- 0
+hospital$ANYOPER[is.na(hospital$ANYOPER)] <- 0
+hospital$ANYOPER <- ifelse(hospital$ANYOPER < 0,0,hospital$ANYOPER)
+hospital$ANYOPER <- ifelse(hospital$ANYOPER > 1,0,hospital$ANYOPER)
+hospital$ANYOPER <- as.numeric(hospital$ANYOPER)
+
+#Medicines prescribed at discharge - making assumption that 1 = yes and 2 = no
+#what does -1,-7,-8,-9 mean? Different than blank?
+#change na's to no?
+hospital$DSCHPMED[hospital$DSCHPMED == 1] <- 1
+hospital$DSCHPMED[hospital$DSCHPMED == 2] <- 0
+hospital$DSCHPMED[is.na(hospital$DSCHPMED)] <- 0
+hospital$DSCHPMED <- ifelse(hospital$DSCHPMED < 0,0,hospital$DSCHPMED)
+hospital$DSCHPMED <- ifelse(hospital$DSCHPMED > 1,0,hospital$DSCHPMED)
+hospital$DSCHPMED <- as.numeric(hospital$DSCHPMED)
+
+#VA Facility flag
+hospital$VAPLACE[hospital$VAPLACE == 1] <- 'Yes'
+hospital$VAPLACE[hospital$VAPLACE == 0] <- 'No'
+hospital$VAPLACE <- as.factor(hospital$VAPLACE)
+
+hospital$year <- as.factor(hospital$year)
+
+#cost amounts - mdtotal, mdpayment, fctotal, fcpayment, totalcharge, totalexpenditure - what do -1 records represent? change to $0?
+hospital$mdpayment[hospital$mdpayment == -1] <- 0
+hospital$mdtotal[hospital$mdtotal == -1] <- 0
+hospital$fcpayment[hospital$fcpayment == -1] <- 0
+hospital$fctotal[hospital$fctotal == -1] <- 0
+hospital$totalcharge[hospital$totalcharge == -1] <- 0
+hospital$totalexpenditure[hospital$totalexpenditure == -1] <- 0
+
+str(hospital)
+summary(hospital)
+colnames(hospital)
+nrow(hospital)
+hospital_unique_records <- hospital %>% group_by(DUPERSID, year, EVNTIDX) %>% summarize(count=n())
+nrow(hospital_unique_records)   # PK - DUPERSID, year, EVNTIDX
+rm(hospital_unique_records)
+
+# target variable creation
+list <- c("480", "481", "482", "483", "484", "485", "486", "V09")
+hospital_target <- rbind(hospital[hospital$icd1x %in% list,],
+                         hospital[hospital$icd2x %in% list,],
+                         hospital[hospital$icd3x %in% list,],
+                         hospital[hospital$icd4x %in% list,])
+
+hospital_target <- unique(hospital_target)
+hospital_target$target <- 1
+colnames(hospital_target)
+hospital_target_eventid <- subset(hospital_target, select = c("DUPERSID","year","EVNTIDX","target"))
+hospital_2 <- merge(hospital, hospital_target_eventid, by = c("DUPERSID","year","EVNTIDX"), all.x = TRUE)
+hospital_2$target[hospital_2$target == 1] <- "Positive"
+hospital_2$target[is.na(hospital_2$target)] <- "Negative"
+hospital_2$target <- as.factor(hospital_2$target)
+hospital_2$ERHEVIDX[!is.na(hospital_2$ERHEVIDX)] <- 1
+hospital_2$ERHEVIDX[is.na(hospital_2$ERHEVIDX)] <- 0
+
+hospital_2$num_nights[is.na(hospital_2$num_nights)] <- 0
+colnames(hospital_2)
+
+myvars <- c("DUPERSID", "EVNTIDX", "icd1x", "icd2x", "icd3x", "icd4x", "pro1x", "pro2x", "VAPLACE", "year", "mdtotal", "mdpayment", "fctotal", "fcpayment", "totalcharge", "totalexpenditure", "ERHEVIDX", "EMERROOM", "num_nights", "SPECCOND", "RSNINHOS", "ANYOPER", "DSCHPMED","target")
+
+hospital_2 <- hospital_2[myvars]
+summary(hospital_2)
+
+rm(hospital,hospital_target,hospital_target_eventid)
+```
+
+## Creating a hospital table at patient - year level
+
+```{r}
+str(hospital_2)
+hospital_3 <- hospital_2
+
+hospital_3$VAPLACE <- as.character(hospital_3$VAPLACE)
+hospital_3$VAPLACE[hospital_3$VAPLACE == 'Yes'] <- 1
+hospital_3$VAPLACE[hospital_3$VAPLACE == 'No'] <- 0
+hospital_3$VAPLACE <- as.numeric(hospital_3$VAPLACE)
+
+hospital_3$target <- as.numeric(hospital_3$target)
+hospital_3$target[hospital_3$target == 1] <- 0
+hospital_3$target[hospital_3$target == 2] <- 1
+hospital_3$target <- as.numeric(hospital_3$target)
+
+hospital_3$patientid_year = paste(hospital_3$DUPERSID, hospital_3$year, sep='-')
+
+# getting the data to patient-year level
+hospital_4 <- hospital_3 %>% group_by(patientid_year) %>% summarize(visit_count=n(), 
+                                                                    mdtotal = sum(mdtotal),
+                                                                    fctotal = sum(fctotal),
+                                                                    fcpayment = sum(fcpayment),
+                                                                    totalcharge = sum(totalcharge),
+                                                                    totalexpenditure = sum(totalexpenditure),
+                                                                    target = max(target),
+                                                                    VAFacility = max(VAPLACE),
+                                                                    emer_related_stay = max(SPECCOND),
+                                                                    emer_medication = max(DSCHPMED),
+                                                                    operation = max(ANYOPER),
+                                                                    num_nights = sum(num_nights),
+                                                                    emer_room = max(EMERROOM),
+                                                                    emer_rec = max(ERHEVIDX)
+                                                                    )
+table(hospital_4$target)
+
+# patient procedures - 73 variables
+proc1 = subset(hospital_3, select=c("patientid_year", "pro1x"))
+colnames(proc1) <- c("patientid_year", "procedure")
+
+proc2 = subset(hospital_3, select=c("patientid_year", "pro2x"))
+colnames(proc2) <- c("patientid_year", "procedure")
+
+proc <- rbind(proc1,proc2)
+proc <- unique(proc)
+rm(proc1,proc2)
+proc <- subset(proc, proc$procedure != 'NA')
+
+proc_list <- proc %>% group_by(procedure) %>% summarise(c = n())
+
+proc_count <- proc %>% group_by(patientid_year) %>% summarize(proc_count=n()) 
+proc$procedure <- paste("Proc_",proc$procedure, sep = '')
+proc_pat <- dcast(proc,formula = patientid_year~procedure)
+
+for (i in c(2:74)){
+  proc_pat[i] <- ifelse(!is.na(proc_pat[i]),1,0) 
+}
+
+proc_pat <- merge(proc_count, proc_pat, by = "patientid_year")
+proc_pat[is.na(proc_pat)] <- 0
+patient_procedures <- proc_pat
+hospital_4 <- merge(hospital_4, patient_procedures, by = "patientid_year", all.x = TRUE)
+
+# patient emergency reasons - 6 variables
+emer_reason_data = subset(hospital_3, select=c("patientid_year", "RSNINHOS"))
+colnames(emer_reason_data) <- c("patientid_year", "emer_reason")
+emer_reason_data$emer_reason <- paste("emer_reason_",emer_reason_data$emer_reason, sep = '')
+emer_reason_data <- dcast(emer_reason_data,formula = patientid_year~emer_reason)
+
+for (i in c(2:7)){
+  emer_reason_data[i] <- ifelse(!is.na(emer_reason_data[i]),1,0) 
+}
+emer_reason_data[is.na(emer_reason_data)] <- 0
+patient_emer_reasons <- emer_reason_data
+hospital_4 <- merge(hospital_4, emer_reason_data, by = "patientid_year", all.x = TRUE)
+
+table(hospital_4$target)
+rm(proc_pat, proc, proc_count, proc_list, emer_reason_data, hospital_3)
+```
+
+## RX DATASET
+```{r MEDICATIONS}
+setwd(folder)
+medications <- read.csv("rx0304_mod.csv", header = TRUE, sep=",",na.strings = c("-9", "-8","-7","-1"))
+
+str(medications)
+summary(medications)
+
+colnames(medications) <- c(
+"DUPERSID","RXRECIDX","LINKIDX","RXNAME","PharmType1","PharmType2",   "DIABFLG","RXICD1X","RXICD2X","RXICD3X","RXClass1", "RXClass2", "RXClass3","year",
+"rxpayment", "rxexpenditure"
+  )
+medications$RXRECIDX <- as.character(medications$RXRECIDX)
+medications$year <- as.factor(medications$year)
+
+#pharmtype - need to find way to set all values not between 1 and 5 equal to NA then run codes below to change 1-5 values to Mail, Store, etc.
+summary(medications$PharmType1)
+medications$PharmType1 <- as.character(medications$PharmType1)
+medications$PharmType1[medications$PharmType1 == 1] <- 'Mail'
+medications$PharmType1[medications$PharmType1 == 2] <- 'Store'
+medications$PharmType1[medications$PharmType1 == 3] <- 'Hospital'
+medications$PharmType1[medications$PharmType1 == 4] <- 'Drugstore'
+medications$PharmType1[medications$PharmType1 == 5] <- 'Online'
+medications$PharmType1[is.na(medications$PharmType1)] <- 'Unknown'
+medications$PharmType1 <- as.factor(medications$PharmType1)
+
+#do same steps for pharmtype2 as pharmtype1
+summary(medications$PharmType2)
+medications$PharmType2 <- as.character(medications$PharmType2)
+medications$PharmType2[medications$PharmType2 == 1] <- 'Mail'
+medications$PharmType2[medications$PharmType2 == 2] <- 'Store'
+medications$PharmType2[medications$PharmType2 == 3] <- 'Hospital'
+medications$PharmType2[medications$PharmType2 == 4] <- 'Drugstore'
+medications$PharmType2[medications$PharmType2 == 5] <- 'Online'
+medications$PharmType2 <- as.factor(medications$PharmType2)
+
+#diabflag - need to make sure this means that medicine is for diabetes
+summary(medications$DIABFLG)
+medications$DIABFLG <- as.character(medications$DIABFLG)
+#medications$DIABFLG[medications$DIABFLG == '.'] <- 'No'
+medications$DIABFLG[medications$DIABFLG == 0] <- 'No'
+medications$DIABFLG[medications$DIABFLG == 1] <- 'Yes'
+medications$DIABFLG <- as.factor(medications$DIABFLG)
+
+#RXClass1,2,3 - same codes for each - change all values not in below list to NA
+summary(medications$RXClass1)
+medications$RXClass1 <- as.character(medications$RXClass1)
+medications$RXClass1[medications$RXClass1 == 1] <- 'Antiinfective'
+medications$RXClass1[medications$RXClass1 == 19] <- 'UnknownCategory'
+medications$RXClass1[medications$RXClass1 == 20] <- 'Antineoplastics'
+medications$RXClass1[medications$RXClass1 == 28] <- 'Biologicals'
+medications$RXClass1[medications$RXClass1 == 40] <- 'Cardiovascular'
+medications$RXClass1[medications$RXClass1 == 57] <- 'CNS'
+medications$RXClass1[medications$RXClass1 == 81] <- 'Coagulation'
+medications$RXClass1[medications$RXClass1 == 87] <- 'Gastrointestinal'
+medications$RXClass1[medications$RXClass1 == 97] <- 'Hormones'
+medications$RXClass1[medications$RXClass1 == 105] <- 'Misc'
+medications$RXClass1[medications$RXClass1 == 115] <- 'Nutritional'
+medications$RXClass1[medications$RXClass1 == 122] <- 'Respiratory'
+medications$RXClass1[medications$RXClass1 == 133] <- 'Topical'
+medications$RXClass1[medications$RXClass1 == 218] <- 'Alternative'
+medications$RXClass1[medications$RXClass1 == 242] <- 'Psychotherapeutic'
+medications$RXClass1[medications$RXClass1 == 254] <- 'Immonologic'
+medications$RXClass1[medications$RXClass1 == 331] <- 'Radiologic'
+medications$RXClass1[medications$RXClass1 == 358] <- 'Metabolic'
+medications$RXClass1[is.na(medications$RXClass1)] <- 'Unknown'
+medications$RXClass1 <- as.factor(medications$RXClass1)
+summary(medications$RXClass1)
+
+summary(medications$RXClass2)
+medications$RXClass2 <- as.character(medications$RXClass2)
+medications$RXClass2[medications$RXClass2 == 1] <- 'Antiinfective'
+medications$RXClass2[medications$RXClass2 == 19] <- 'UnknownCategory'
+medications$RXClass2[medications$RXClass2 == 20] <- 'Antineoplastics'
+medications$RXClass2[medications$RXClass2 == 28] <- 'Biologicals'
+medications$RXClass2[medications$RXClass2 == 40] <- 'Cardiovascular'
+medications$RXClass2[medications$RXClass2 == 57] <- 'CNS'
+medications$RXClass2[medications$RXClass2 == 81] <- 'Coagulation'
+medications$RXClass2[medications$RXClass2 == 87] <- 'Gastrointestinal'
+medications$RXClass2[medications$RXClass2 == 97] <- 'Hormones'
+medications$RXClass2[medications$RXClass2 == 105] <- 'Misc'
+medications$RXClass2[medications$RXClass2 == 115] <- 'Nutritional'
+medications$RXClass2[medications$RXClass2 == 122] <- 'Respiratory'
+medications$RXClass2[medications$RXClass2 == 133] <- 'Topical'
+medications$RXClass2[medications$RXClass2 == 218] <- 'Alternative'
+medications$RXClass2[medications$RXClass2 == 242] <- 'Psychotherapeutic'
+medications$RXClass2[medications$RXClass2 == 254] <- 'Immonologic'
+medications$RXClass2[medications$RXClass2 == 331] <- 'Radiologic'
+medications$RXClass2[medications$RXClass2 == 358] <- 'Metabolic'
+medications$RXClass2 <- as.factor(medications$RXClass2)
+summary(medications$RXClass2)
+
+summary(medications$RXClass3)
+medications$RXClass3 <- as.character(medications$RXClass3)
+medications$RXClass3[medications$RXClass3 == 1] <- 'Antiinfective'
+medications$RXClass3[medications$RXClass3 == 19] <- 'UnknownCategory'
+medications$RXClass3[medications$RXClass3 == 20] <- 'Antineoplastics'
+medications$RXClass3[medications$RXClass3 == 28] <- 'Biologicals'
+medications$RXClass3[medications$RXClass3 == 40] <- 'Cardiovascular'
+medications$RXClass3[medications$RXClass3 == 57] <- 'CNS'
+medications$RXClass3[medications$RXClass3 == 81] <- 'Coagulation'
+medications$RXClass3[medications$RXClass3 == 87] <- 'Gastrointestinal'
+medications$RXClass3[medications$RXClass3 == 97] <- 'Hormones'
+medications$RXClass3[medications$RXClass3 == 105] <- 'Misc'
+medications$RXClass3[medications$RXClass3 == 115] <- 'Nutritional'
+medications$RXClass3[medications$RXClass3 == 122] <- 'Respiratory'
+medications$RXClass3[medications$RXClass3 == 133] <- 'Topical'
+medications$RXClass3[medications$RXClass3 == 218] <- 'Alternative'
+medications$RXClass3[medications$RXClass3 == 242] <- 'Psychotherapeutic'
+medications$RXClass3[medications$RXClass3 == 254] <- 'Immonologic'
+medications$RXClass3[medications$RXClass3 == 331] <- 'Radiologic'
+medications$RXClass3[medications$RXClass3 == 358] <- 'Metabolic'
+medications$RXClass3 <- as.factor(medications$RXClass3)
+summary(medications$RXClass3)/
+
+medications_unique_records <- medications %>% group_by(DUPERSID, RXRECIDX, RXNAME, RXICD1X, rxpayment, year) %>% summarize(count=n())
+nrow(medications_unique_records)   # PK - DUPERSID, RXRECID, year
+rm(medications_unique_records)
+summary(medications)
+
+```
+
+## MERGING DATASETS - hospital, demographics and conditions
+```{r MERGING DATASETS}
+hosp_demo <- merge(hospital_2, demographics_2, by = c("DUPERSID","year"))
+
+conditions_4 <- conditions_3
+conditions_4$patientid_year = paste(conditions_4$DUPERSID, conditions_4$year, sep='-')
+conditions_4 = subset(conditions_4, select=c("patientid_year", "ICD9CODX"))
+colnames(conditions_4) <- c("patientid_year", "condition")
+
+conditions_5 <- subset(conditions_4, conditions_4$condition != 'NA')
+#conditions_5$condition <- paste("cond_",conditions_5$condition, sep = '')
+conditions_5 <- unique(conditions_5)
+cond_count <- conditions_5 %>% group_by(patientid_year) %>% summarize(cond_count=n()) 
+hospital_patientyr <- hospital_4 %>% group_by(patientid_year) %>% summarize(c=n()) 
+patientyr <- as.data.frame(hospital_patientyr$patientid_year)
+colnames(patientyr) <- c("patientid_year")
+conditions_6 <- merge(patientyr, conditions_5, by = "patientid_year", all.x = TRUE)
+
+icd_group <- read.csv("icd_list_final2.csv")
+colnames(icd_group)
+colnames(icd_group) <- c("condition","condition_desc")
+
+conditions_6 <- merge(conditions_6,icd_group, by = "condition", all.x = TRUE )
+conditions_6 <- subset(conditions_6, select = c("patientid_year", "condition_desc"))
+colnames(conditions_6) <- c("patientid_year","condition")
+summary(cond_count)
+conditions_6$condition <- paste("cond_",conditions_6$condition, sep = '')
+patient_condition <- dcast(conditions_6,formula = patientid_year~condition)
+
+for (i in c(2:23)){
+  patient_condition[i] <- ifelse(patient_condition[i] == 0,0,1) 
+}
+
+patient_conditions <- merge(patient_condition,cond_count, by = "patientid_year", all.x = TRUE)
+
+rm(conditions_6, conditions_5, conditions_4, cond_count,patient_condition  )
+```
+
+## MERGING DATASETS - hospital, demographics, conditions and medications
+
+# medications - PharmType1,2
+
+```{r}
+# PharmType1
+summary(medications)
+medications_1 <- medications
+medications_12 <- medications
+
+medications_1$patientid_year = paste(medications_1$DUPERSID, medications_1$year, sep='-')
+medications_1 = subset(medications_1, select=c("patientid_year", "PharmType1"))
+colnames(medications_1) <- c("patientid_year", "PharmType")
+
+medications_12$patientid_year = paste(medications_12$DUPERSID, medications_12$year, sep='-')
+medications_12 = subset(medications_12, select=c("patientid_year", "PharmType2"))
+colnames(medications_12) <- c("patientid_year", "PharmType")
+
+medications_2 <- rbind(medications_1,medications_12)
+medications_2 <- unique(medications_2)
+rm(medications_12, medications_1)
+
+medications_2$PharmType <- paste(medications_2$PharmType, " : ",sep = '')
+medications_2 <- subset(medications_2, medications_2$PharmType != 'NA : ')
+medications_2$PharmType <- substr(medications_2$PharmType, 1, nchar(medications_2$PharmType)-3)
+medications_2$PharmType <- paste("PharmType_",medications_2$PharmType, sep = '')
+
+medications_3 <- dcast(medications_2,formula = patientid_year~PharmType)
+
+for (i in c(2:7)){
+  medications_3[i] <- ifelse(!is.na(medications_3[i]),1,0) 
+}
+
+patient_pharmatypes <- medications_3
+
+rm(medications_3, medications_2)
+```
+
+# RXClass1,2,3
+
+```{r}
+# RXClass1
+table(final_patientyr_data_2$target)
+summary(medications)
+
+medications_1 <- medications
+medications_12 <- medications
+medications_13 <- medications
+
+medications_1$patientid_year = paste(medications_1$DUPERSID, medications_1$year, sep='-')
+medications_1 = subset(medications_1, select=c("patientid_year", "RXClass1"))
+colnames(medications_1) <- c("patientid_year", "RXClass")
+
+medications_12$patientid_year = paste(medications_12$DUPERSID, medications_12$year, sep='-')
+medications_12 = subset(medications_12, select=c("patientid_year", "RXClass2"))
+colnames(medications_12) <- c("patientid_year", "RXClass")
+
+medications_13$patientid_year = paste(medications_13$DUPERSID, medications_13$year, sep='-')
+medications_13 = subset(medications_13, select=c("patientid_year", "RXClass3"))
+colnames(medications_13) <- c("patientid_year", "RXClass")
+
+medications_2 <- rbind(medications_1,medications_12,medications_13)
+medications_2 <- unique(medications_2)
+rm(medications_12, medications_1,medications_13)
+
+medications_2$RXClass <- paste(medications_2$RXClass, " : ",sep = '')
+medications_2 <- subset(medications_2, medications_2$RXClass != 'NA : ')
+medications_2$RXClass <- substr(medications_2$RXClass, 1, nchar(medications_2$RXClass)-3)
+medications_2$RXClass <- paste("RXClass_",medications_2$RXClass, sep = '')
+
+medications_3 <- dcast(medications_2,formula = patientid_year~RXClass)
+
+for (i in c(2:19)){
+  medications_3[i] <- ifelse(!is.na(medications_3[i]),1,0) 
+}
+
+patient_class <- medications_3
+
+rm(medications_3, medications_2)
+```
+
+## Medications 
+
+```{r}
+colnames(medications)
+med1 <- medications
+med1$patientid_year = paste(med1$DUPERSID, med1$year, sep='-')
+med1 = subset(med1, select=c("patientid_year", "RXNAME"))
+colnames(med1) <- c("patientid_year", "medication")
+
+med2 <- subset(med1, med1$medication != 'NA')
+med2$medication <- paste("med_",med2$medication, sep = '')
+med2 <- unique(med2)
+med_count <- med2 %>% group_by(patientid_year) %>% summarize(med_count=n()) 
+med3 <- merge(patientyr, med2, by = "patientid_year", all.x = TRUE)
+
+patient_med <- dcast(med3,formula = patientid_year~medication)
+
+for (i in c(2:4217)){
+  patient_med[i] <- ifelse(!is.na(patient_med[i]),1,0) 
+}
+
+patient_medications <- merge(med_count, patient_med, by = "patientid_year", all.y = TRUE)
+rm(med1, med2, med3, patient_med, med_count  )
+```
+
+
+
+## Merging all datasets at patient-yr level
+
+
+```{r} 
+# hospital with demographics - hosp_demo_patientyr_level 
+
+hospital_patientyr <- hospital_4
+demographics_2$patientid_year = paste(demographics_2$DUPERSID, demographics_2$year, sep='-')
+hosp_demo_patientyr_level <- merge(hospital_patientyr, demographics_2, by = "patientid_year")
+table(hosp_demo_patientyr_level$target)
+sum(hospital_patientyr$target)
+
+# patient conditions with hosp_demo_patientyr_level - hosp_demo_cond_patientyr_level 
+hosp_demo_cond_patientyr_level <- merge(hosp_demo_patientyr_level, patient_conditions, by = "patientid_year", all.x = TRUE)
+hosp_demo_cond_patientyr_level[is.na(hosp_demo_cond_patientyr_level)] <- 0
+table(hosp_demo_cond_patientyr_level$target)
+
+
+# pharmacy type visited with hosp_demo_cond_med_patientyr_level - hosp_demo_cond_med_pt_patientyr 
+hosp_demo_cond_pt_patientyr <- merge(patient_pharmatypes, hosp_demo_cond_patientyr_level, by = "patientid_year", all.y = TRUE)
+hosp_demo_cond_pt_patientyr[is.na(hosp_demo_cond_pt_patientyr)] <- 0
+table(hosp_demo_cond_pt_patientyr$target)
+
+# Symptom Class with hosp_demo_cond_med_pt_patientyr - hosp_demo_cond_med_pt_cl_patienty
+hosp_demo_cond_pt_cl_patientyr <- merge(patient_class, hosp_demo_cond_pt_patientyr, by = "patientid_year", all.y = TRUE)
+hosp_demo_cond_pt_cl_patientyr[is.na(hosp_demo_cond_pt_cl_patientyr)] <- 0
+table(hosp_demo_cond_pt_cl_patientyr$target)
+
+final_patientyr_data_2 <- hosp_demo_cond_pt_cl_patientyr
+final_patientyr_data_2[is.na(final_patientyr_data_2)] <- 0
+
+folder="C:/Users/Lavanya/Google Drive/Group Project/Lavanya/FinalData"
+setwd(folder)
+write.csv(final_patientyr_data_2, "final_patientyr_data_2.csv", row.names = FALSE)
+
+icd_df1 <- as.data.frame(hospital_2$icd1x)
+colnames(icd_df1) <- c("icd")
+icd_df2 <- as.data.frame(hospital_2$icd2x)
+colnames(icd_df2) <- c("icd")
+icd_df3 <- as.data.frame(hospital_2$icd3x)
+colnames(icd_df3) <- c("icd")
+icd_df4 <- as.data.frame(hospital_2$icd4x)
+colnames(icd_df4) <- c("icd")
+icd_df5 <- as.data.frame(conditions_3$ICD9CODX)
+colnames(icd_df5) <- c("icd")
+icd_df <- rbind(icd_df1,icd_df2,icd_df3,icd_df4,icd_df5)
+rm(icd_df1,icd_df2,icd_df3,icd_df4,icd_df5) 
+icd_df <- unique(icd_df)
+folder="C:/Users/Lavanya/Google Drive/Group Project/Lavanya/FinalData"
+setwd(folder)
+write.csv(icd_df, "icd_list.csv", row.names = F)
+
+```

@@ -1,0 +1,146 @@
+---
+title: "MSRA"
+author: "Ananya Mishra"
+date: "November 13, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+folder="C:/Users/mishr/Google Drive/Group Project/Lavanya/Case1-MSRA/Training"
+setwd(folder)
+```
+
+```{r}
+patient_hospital_record<-read.csv("patient_hospital_record.csv")
+```
+
+```{r}
+summary(patient_hospital_record)
+colnames(patient_hospital_record)
+```
+
+```{r}
+patient_hospital_record$target<-as.factor(patient_hospital_record$target)
+
+patient_hospital_record$DUPERSID<-as.factor(patient_hospital_record$DUPERSID)
+
+patient_hospital_record$year<-as.factor(patient_hospital_record$year)
+patient_hospital_record$ICD9CODX<-as.factor(patient_hospital_record$ICD9CODX)
+patient_hospital_record$DOBMM<-as.factor(patient_hospital_record$DOBMM)
+patient_hospital_record$DOBYY<-as.factor(patient_hospital_record$DOBYY)
+
+patient_hospital_record$SEX<-factor(patient_hospital_record$SEX,level=c(1,2),labels=c("Male","Female"))
+
+patient_hospital_record$RACEX<-factor(patient_hospital_record$RACEX,level=c(1,2,3,4,5,6),labels=c("White","Black","American Indian/Alaska Native","Asian","Native Hawaiian/Pacific islander","Multiple races"))
+patient_hospital_record$RACEAX<-factor(patient_hospital_record$RACEAX,level=c(1,2,3),labels=c("Asian-no other race reported","Asian-other race(s) reported","All other race assignments"))
+patient_hospital_record$RACEBX<-factor(patient_hospital_record$RACEBX,level=c(1,2,3),labels=c("Black-no other race reported","Black-other race(s) reported","All other race assignments"))
+patient_hospital_record$RACEWX<-factor(patient_hospital_record$RACEWX,level=c(1,2,3),labels=c("White-no other race reported","White-other race(s) reported","All other race assignments"))
+
+patient_hospital_record$RACETHNX<-factor(patient_hospital_record$RACETHNX,level=c(1,2,3),labels=c("Person is Hispanic","Person is black-no other race/not Hispanic","Person is Asian-no other race/not Hispanic","Other Race/not Hispanic"))
+
+patient_hospital_record$HISPANX<-factor(patient_hospital_record$HISPANX,level=c(1,2),labels=c("Hispanic","Not Hispanic"))
+
+patient_hospital_record$HISPCAT<-factor(patient_hospital_record$HISPCAT,level=c(1,2,3,4,5,6,91,92),labels=c("Puerto Rican","2	Cuban/Cuban American","Dominican","Mexican/Maxican American","Central or South American","Non-Hispanic","Other Latin American","Other Hispanic/Latino"))
+
+patient_hospital_record$marry<-factor(patient_hospital_record$marry,level=c(1,2,3,4,5,6),labels=c("Married","Widowed","Divorced","Separated","Never Married","Under 16 inapplicable"))
+
+patient_hospital_record$EDUCYEAR<-factor(patient_hospital_record$EDUCYEAR,level=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17),labels=c("Never attended school","Grades 1","Grades 2","Grades 3","Grades 4","Grades 5","Grades 6","Grades 7","Grades 8","Grades 9","Grades 10","Grades 11","Grades 12","1 year college","2 years college","3 years college","4 years college","5 years college","5+ years college"))
+
+patient_hospital_record$poverty<-factor(patient_hospital_record$poverty,level=c(1,2,3,4,5),labels=c("Poor/Negative","Near Poor","Low Income","Middle Income","High Income"))
+
+patient_hospital_record$RSNINHOS<-factor(patient_hospital_record$RSNINHOS,level=c(1,2,3,4,5,91),labels=c("Operation or surgical procedure","treatment/therapy","diagnostic tests only","give birth to a baby (mother)","to be born (baby)","Other
+"))
+
+patient_hospital_record$EVNTIDX<-as.factor(patient_hospital_record$EVNTIDX)
+
+patient_hospital_record$icd1x<-as.factor(patient_hospital_record$icd1x)
+patient_hospital_record$icd2x<-as.factor(patient_hospital_record$icd2x)
+patient_hospital_record$icd3x<-as.factor(patient_hospital_record$icd3x)
+patient_hospital_record$icd4x<-as.factor(patient_hospital_record$icd4x)
+
+patient_hospital_record$pro1x<-as.factor(patient_hospital_record$pro1x)
+patient_hospital_record$pro2x<-as.factor(patient_hospital_record$pro2x)
+
+
+```
+
+```{r}
+library(ggplot2)
+#attach(patient_hospital_record)
+#detach(patient_hospital_record)
+```
+
+```{r}
+g <- ggplot(data = patient_hospital_record, aes(x = mdprivateins, y = mdselfpaid))
+g + geom_point(aes(color=target))
+```
+
+
+
+```{r}
+g2 <- ggplot(data = patient_hospital_record, aes(x = income, y = mdpayment))
+g2 + geom_point(aes(color=target))
+```
+
+
+```{r}
+g3 <- ggplot(data = patient_hospital_record, aes(x = fcprivateins, y = fcselfpaid))
+g3 + geom_point(aes(color=target))
+```
+
+
+
+```{r}
+g4 <- ggplot(data = patient_hospital_record, aes(x = fcpayment, y = totalcharge))
+g4 + geom_point(aes(color=target))
+```
+
+```{r}
+g4 <- ggplot(data = patient_hospital_record, aes(x = fcpayment, y = totalcharge))
+g4 + geom_point(aes(color=target,shape=SEX))
+```
+
+
+```{r}
+g4 <- ggplot(data = patient_hospital_record, aes(y=income, x = totalexpenditure))
+g4 + geom_point(aes(color=target,shape=RACEX))
+```
+
+```{r}
+g4 <- ggplot(data = patient_hospital_record, aes(target))
+g4 + geom_bar(aes(color=DOBYY))
+```
+
+```{r}
+affected<-patient_hospital_record[patient_hospital_record$target==1,]
+```
+
+```{r}
+g4 <- ggplot(data = affected, aes(target))
+g4 + geom_bar(aes(color=marry))
+```
+
+

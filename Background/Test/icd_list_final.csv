@@ -1,0 +1,1302 @@
+ICD Code,Descr
+000,infectious_parasitic
+001,infectious_parasitic
+002,infectious_parasitic
+003,infectious_parasitic
+004,infectious_parasitic
+005,infectious_parasitic
+006,infectious_parasitic
+007,infectious_parasitic
+008,infectious_parasitic
+009,infectious_parasitic
+010,infectious_parasitic
+011,infectious_parasitic
+012,infectious_parasitic
+013,infectious_parasitic
+014,infectious_parasitic
+015,infectious_parasitic
+016,infectious_parasitic
+017,infectious_parasitic
+018,infectious_parasitic
+019,infectious_parasitic
+020,infectious_parasitic
+021,infectious_parasitic
+022,infectious_parasitic
+023,infectious_parasitic
+024,infectious_parasitic
+025,infectious_parasitic
+026,infectious_parasitic
+027,infectious_parasitic
+028,infectious_parasitic
+029,infectious_parasitic
+030,infectious_parasitic
+031,infectious_parasitic
+032,infectious_parasitic
+033,infectious_parasitic
+034,infectious_parasitic
+035,infectious_parasitic
+036,infectious_parasitic
+037,infectious_parasitic
+038,infectious_parasitic
+039,infectious_parasitic
+040,infectious_parasitic
+041,infectious_parasitic
+042,infectious_parasitic
+043,infectious_parasitic
+044,infectious_parasitic
+045,infectious_parasitic
+046,infectious_parasitic
+047,infectious_parasitic
+048,infectious_parasitic
+049,infectious_parasitic
+050,infectious_parasitic
+051,infectious_parasitic
+052,infectious_parasitic
+053,infectious_parasitic
+054,infectious_parasitic
+055,infectious_parasitic
+056,infectious_parasitic
+057,infectious_parasitic
+058,infectious_parasitic
+059,infectious_parasitic
+060,infectious_parasitic
+061,infectious_parasitic
+062,infectious_parasitic
+063,infectious_parasitic
+064,infectious_parasitic
+065,infectious_parasitic
+066,infectious_parasitic
+067,infectious_parasitic
+068,infectious_parasitic
+069,infectious_parasitic
+070,infectious_parasitic
+071,infectious_parasitic
+072,infectious_parasitic
+073,infectious_parasitic
+074,infectious_parasitic
+075,infectious_parasitic
+076,infectious_parasitic
+077,infectious_parasitic
+078,infectious_parasitic
+079,infectious_parasitic
+080,infectious_parasitic
+081,infectious_parasitic
+082,infectious_parasitic
+083,infectious_parasitic
+084,infectious_parasitic
+085,infectious_parasitic
+086,infectious_parasitic
+087,infectious_parasitic
+088,infectious_parasitic
+089,infectious_parasitic
+090,infectious_parasitic
+091,infectious_parasitic
+092,infectious_parasitic
+093,infectious_parasitic
+094,infectious_parasitic
+095,infectious_parasitic
+096,infectious_parasitic
+097,infectious_parasitic
+098,infectious_parasitic
+099,infectious_parasitic
+100,infectious_parasitic
+101,infectious_parasitic
+102,infectious_parasitic
+103,infectious_parasitic
+104,infectious_parasitic
+105,infectious_parasitic
+106,infectious_parasitic
+107,infectious_parasitic
+108,infectious_parasitic
+109,infectious_parasitic
+110,infectious_parasitic
+111,infectious_parasitic
+112,infectious_parasitic
+113,infectious_parasitic
+114,infectious_parasitic
+115,infectious_parasitic
+116,infectious_parasitic
+117,infectious_parasitic
+118,infectious_parasitic
+119,infectious_parasitic
+120,infectious_parasitic
+121,infectious_parasitic
+122,infectious_parasitic
+123,infectious_parasitic
+124,infectious_parasitic
+125,infectious_parasitic
+126,infectious_parasitic
+127,infectious_parasitic
+128,infectious_parasitic
+129,infectious_parasitic
+130,infectious_parasitic
+131,infectious_parasitic
+132,infectious_parasitic
+133,infectious_parasitic
+134,infectious_parasitic
+135,infectious_parasitic
+136,infectious_parasitic
+137,infectious_parasitic
+138,infectious_parasitic
+139,infectious_parasitic
+140,neoplasms
+141,neoplasms
+142,neoplasms
+143,neoplasms
+144,neoplasms
+145,neoplasms
+146,neoplasms
+147,neoplasms
+148,neoplasms
+149,neoplasms
+150,neoplasms
+151,neoplasms
+152,neoplasms
+153,neoplasms
+154,neoplasms
+155,neoplasms
+156,neoplasms
+157,neoplasms
+158,neoplasms
+159,neoplasms
+160,neoplasms
+161,neoplasms
+162,neoplasms
+163,neoplasms
+164,neoplasms
+165,neoplasms
+166,neoplasms
+167,neoplasms
+168,neoplasms
+169,neoplasms
+170,neoplasms
+171,neoplasms
+172,neoplasms
+173,neoplasms
+174,neoplasms
+175,neoplasms
+176,neoplasms
+177,neoplasms
+178,neoplasms
+179,neoplasms
+180,neoplasms
+181,neoplasms
+182,neoplasms
+183,neoplasms
+184,neoplasms
+185,neoplasms
+186,neoplasms
+187,neoplasms
+188,neoplasms
+189,neoplasms
+190,neoplasms
+191,neoplasms
+192,neoplasms
+193,neoplasms
+194,neoplasms
+195,neoplasms
+196,neoplasms
+197,neoplasms
+198,neoplasms
+199,neoplasms
+200,neoplasms
+201,neoplasms
+202,neoplasms
+203,neoplasms
+204,neoplasms
+205,neoplasms
+206,neoplasms
+207,neoplasms
+208,neoplasms
+209,neoplasms
+210,neoplasms
+211,neoplasms
+212,neoplasms
+213,neoplasms
+214,neoplasms
+215,neoplasms
+216,neoplasms
+217,neoplasms
+218,neoplasms
+219,neoplasms
+220,neoplasms
+221,neoplasms
+222,neoplasms
+223,neoplasms
+224,neoplasms
+225,neoplasms
+226,neoplasms
+227,neoplasms
+228,neoplasms
+229,neoplasms
+230,neoplasms
+231,neoplasms
+232,neoplasms
+233,neoplasms
+234,neoplasms
+235,neoplasms
+236,neoplasms
+237,neoplasms
+238,neoplasms
+239,neoplasms
+240,endocrine_nutritional_metabolic_immunity
+241,endocrine_nutritional_metabolic_immunity
+242,endocrine_nutritional_metabolic_immunity
+243,endocrine_nutritional_metabolic_immunity
+244,endocrine_nutritional_metabolic_immunity
+245,endocrine_nutritional_metabolic_immunity
+246,endocrine_nutritional_metabolic_immunity
+247,endocrine_nutritional_metabolic_immunity
+248,endocrine_nutritional_metabolic_immunity
+249,endocrine_nutritional_metabolic_immunity
+250,endocrine_nutritional_metabolic_immunity
+251,endocrine_nutritional_metabolic_immunity
+252,endocrine_nutritional_metabolic_immunity
+253,endocrine_nutritional_metabolic_immunity
+254,endocrine_nutritional_metabolic_immunity
+255,endocrine_nutritional_metabolic_immunity
+256,endocrine_nutritional_metabolic_immunity
+257,endocrine_nutritional_metabolic_immunity
+258,endocrine_nutritional_metabolic_immunity
+259,endocrine_nutritional_metabolic_immunity
+260,endocrine_nutritional_metabolic_immunity
+261,endocrine_nutritional_metabolic_immunity
+262,endocrine_nutritional_metabolic_immunity
+263,endocrine_nutritional_metabolic_immunity
+264,endocrine_nutritional_metabolic_immunity
+265,endocrine_nutritional_metabolic_immunity
+266,endocrine_nutritional_metabolic_immunity
+267,endocrine_nutritional_metabolic_immunity
+268,endocrine_nutritional_metabolic_immunity
+269,endocrine_nutritional_metabolic_immunity
+270,endocrine_nutritional_metabolic_immunity
+271,endocrine_nutritional_metabolic_immunity
+272,endocrine_nutritional_metabolic_immunity
+273,endocrine_nutritional_metabolic_immunity
+274,endocrine_nutritional_metabolic_immunity
+275,endocrine_nutritional_metabolic_immunity
+276,endocrine_nutritional_metabolic_immunity
+277,endocrine_nutritional_metabolic_immunity
+278,endocrine_nutritional_metabolic_immunity
+279,endocrine_nutritional_metabolic_immunity
+280,blood_disease
+281,blood_disease
+282,blood_disease
+283,blood_disease
+284,blood_disease
+285,blood_disease
+286,blood_disease
+287,blood_disease
+288,blood_disease
+289,blood_disease
+290,mental disorders
+291,mental disorders
+292,mental disorders
+293,mental disorders
+294,mental disorders
+295,mental disorders
+296,mental disorders
+297,mental disorders
+298,mental disorders
+299,mental disorders
+300,mental disorders
+301,mental disorders
+302,mental disorders
+303,mental disorders
+304,mental disorders
+305,mental disorders
+306,mental disorders
+307,mental disorders
+308,mental disorders
+309,mental disorders
+310,mental disorders
+311,mental disorders
+312,mental disorders
+313,mental disorders
+314,mental disorders
+315,mental disorders
+316,mental disorders
+317,mental disorders
+318,mental disorders
+319,mental disorders
+320,nervous system
+321,nervous system
+322,nervous system
+323,nervous system
+324,nervous system
+325,nervous system
+326,nervous system
+327,nervous system
+328,nervous system
+329,nervous system
+330,nervous system
+331,nervous system
+332,nervous system
+333,nervous system
+334,nervous system
+335,nervous system
+336,nervous system
+337,nervous system
+338,nervous system
+339,nervous system
+340,nervous system
+341,nervous system
+342,nervous system
+343,nervous system
+344,nervous system
+345,nervous system
+346,nervous system
+347,nervous system
+348,nervous system
+349,nervous system
+350,nervous system
+351,nervous system
+352,nervous system
+353,nervous system
+354,nervous system
+355,nervous system
+356,nervous system
+357,nervous system
+358,nervous system
+359,nervous system
+360,sense organs
+361,sense organs
+362,sense organs
+363,sense organs
+364,sense organs
+365,sense organs
+366,sense organs
+367,sense organs
+368,sense organs
+369,sense organs
+370,sense organs
+371,sense organs
+372,sense organs
+373,sense organs
+374,sense organs
+375,sense organs
+376,sense organs
+377,sense organs
+378,sense organs
+379,sense organs
+380,sense organs
+381,sense organs
+382,sense organs
+383,sense organs
+384,sense organs
+385,sense organs
+386,sense organs
+387,sense organs
+388,sense organs
+389,sense organs
+390,circulatory_system
+391,circulatory_system
+392,circulatory_system
+393,circulatory_system
+394,circulatory_system
+395,circulatory_system
+396,circulatory_system
+397,circulatory_system
+398,circulatory_system
+399,circulatory_system
+400,circulatory_system
+401,circulatory_system
+402,circulatory_system
+403,circulatory_system
+404,circulatory_system
+405,circulatory_system
+406,circulatory_system
+407,circulatory_system
+408,circulatory_system
+409,circulatory_system
+410,circulatory_system
+411,circulatory_system
+412,circulatory_system
+413,circulatory_system
+414,circulatory_system
+415,circulatory_system
+416,circulatory_system
+417,circulatory_system
+418,circulatory_system
+419,circulatory_system
+420,circulatory_system
+421,circulatory_system
+422,circulatory_system
+423,circulatory_system
+424,circulatory_system
+425,circulatory_system
+426,circulatory_system
+427,circulatory_system
+428,circulatory_system
+429,circulatory_system
+430,circulatory_system
+431,circulatory_system
+432,circulatory_system
+433,circulatory_system
+434,circulatory_system
+435,circulatory_system
+436,circulatory_system
+437,circulatory_system
+438,circulatory_system
+439,circulatory_system
+440,circulatory_system
+441,circulatory_system
+442,circulatory_system
+443,circulatory_system
+444,circulatory_system
+445,circulatory_system
+446,circulatory_system
+447,circulatory_system
+448,circulatory_system
+449,circulatory_system
+450,circulatory_system
+451,circulatory_system
+452,circulatory_system
+453,circulatory_system
+454,circulatory_system
+455,circulatory_system
+456,circulatory_system
+457,circulatory_system
+458,circulatory_system
+459,circulatory_system
+460,respiratory system
+461,respiratory system
+462,respiratory system
+463,respiratory system
+464,respiratory system
+465,respiratory system
+466,respiratory system
+467,respiratory system
+468,respiratory system
+469,respiratory system
+470,respiratory system
+471,respiratory system
+472,respiratory system
+473,respiratory system
+474,respiratory system
+475,respiratory system
+476,respiratory system
+477,respiratory system
+478,respiratory system
+479,respiratory system
+480,respiratory system
+481,respiratory system
+482,respiratory system
+483,respiratory system
+484,respiratory system
+485,respiratory system
+486,respiratory system
+487,respiratory system
+488,respiratory system
+489,respiratory system
+490,respiratory system
+491,respiratory system
+492,respiratory system
+493,respiratory system
+494,respiratory system
+495,respiratory system
+496,respiratory system
+497,respiratory system
+498,respiratory system
+499,respiratory system
+500,respiratory system
+501,respiratory system
+502,respiratory system
+503,respiratory system
+504,respiratory system
+505,respiratory system
+506,respiratory system
+507,respiratory system
+508,respiratory system
+509,respiratory system
+510,respiratory system
+511,respiratory system
+512,respiratory system
+513,respiratory system
+514,respiratory system
+515,respiratory system
+516,respiratory system
+517,respiratory system
+518,respiratory system
+519,respiratory system
+520,digestive system
+521,digestive system
+522,digestive system
+523,digestive system
+524,digestive system
+525,digestive system
+526,digestive system
+527,digestive system
+528,digestive system
+529,digestive system
+530,digestive system
+531,digestive system
+532,digestive system
+533,digestive system
+534,digestive system
+535,digestive system
+536,digestive system
+537,digestive system
+538,digestive system
+539,digestive system
+540,digestive system
+541,digestive system
+542,digestive system
+543,digestive system
+544,digestive system
+545,digestive system
+546,digestive system
+547,digestive system
+548,digestive system
+549,digestive system
+550,digestive system
+551,digestive system
+552,digestive system
+553,digestive system
+554,digestive system
+555,digestive system
+556,digestive system
+557,digestive system
+558,digestive system
+559,digestive system
+560,digestive system
+561,digestive system
+562,digestive system
+563,digestive system
+564,digestive system
+565,digestive system
+566,digestive system
+567,digestive system
+568,digestive system
+569,digestive system
+570,digestive system
+571,digestive system
+572,digestive system
+573,digestive system
+574,digestive system
+575,digestive system
+576,digestive system
+577,digestive system
+578,digestive system
+579,digestive system
+580,genitourinary system
+581,genitourinary system
+582,genitourinary system
+583,genitourinary system
+584,genitourinary system
+585,genitourinary system
+586,genitourinary system
+587,genitourinary system
+588,genitourinary system
+589,genitourinary system
+590,genitourinary system
+591,genitourinary system
+592,genitourinary system
+593,genitourinary system
+594,genitourinary system
+595,genitourinary system
+596,genitourinary system
+597,genitourinary system
+598,genitourinary system
+599,genitourinary system
+600,genitourinary system
+601,genitourinary system
+602,genitourinary system
+603,genitourinary system
+604,genitourinary system
+605,genitourinary system
+606,genitourinary system
+607,genitourinary system
+608,genitourinary system
+609,genitourinary system
+610,genitourinary system
+611,genitourinary system
+612,genitourinary system
+613,genitourinary system
+614,genitourinary system
+615,genitourinary system
+616,genitourinary system
+617,genitourinary system
+618,genitourinary system
+619,genitourinary system
+620,genitourinary system
+621,genitourinary system
+622,genitourinary system
+623,genitourinary system
+624,genitourinary system
+625,genitourinary system
+626,genitourinary system
+627,genitourinary system
+628,genitourinary system
+629,genitourinary system
+630,pregnancy_childbirth_puerperium
+631,pregnancy_childbirth_puerperium
+632,pregnancy_childbirth_puerperium
+633,pregnancy_childbirth_puerperium
+634,pregnancy_childbirth_puerperium
+635,pregnancy_childbirth_puerperium
+636,pregnancy_childbirth_puerperium
+637,pregnancy_childbirth_puerperium
+638,pregnancy_childbirth_puerperium
+639,pregnancy_childbirth_puerperium
+640,pregnancy_childbirth_puerperium
+641,pregnancy_childbirth_puerperium
+642,pregnancy_childbirth_puerperium
+643,pregnancy_childbirth_puerperium
+644,pregnancy_childbirth_puerperium
+645,pregnancy_childbirth_puerperium
+646,pregnancy_childbirth_puerperium
+647,pregnancy_childbirth_puerperium
+648,pregnancy_childbirth_puerperium
+649,pregnancy_childbirth_puerperium
+650,pregnancy_childbirth_puerperium
+651,pregnancy_childbirth_puerperium
+652,pregnancy_childbirth_puerperium
+653,pregnancy_childbirth_puerperium
+654,pregnancy_childbirth_puerperium
+655,pregnancy_childbirth_puerperium
+656,pregnancy_childbirth_puerperium
+657,pregnancy_childbirth_puerperium
+658,pregnancy_childbirth_puerperium
+659,pregnancy_childbirth_puerperium
+660,pregnancy_childbirth_puerperium
+661,pregnancy_childbirth_puerperium
+662,pregnancy_childbirth_puerperium
+663,pregnancy_childbirth_puerperium
+664,pregnancy_childbirth_puerperium
+665,pregnancy_childbirth_puerperium
+666,pregnancy_childbirth_puerperium
+667,pregnancy_childbirth_puerperium
+668,pregnancy_childbirth_puerperium
+669,pregnancy_childbirth_puerperium
+670,pregnancy_childbirth_puerperium
+671,pregnancy_childbirth_puerperium
+672,pregnancy_childbirth_puerperium
+673,pregnancy_childbirth_puerperium
+674,pregnancy_childbirth_puerperium
+675,pregnancy_childbirth_puerperium
+676,pregnancy_childbirth_puerperium
+677,pregnancy_childbirth_puerperium
+678,pregnancy_childbirth_puerperium
+679,pregnancy_childbirth_puerperium
+680,skin_subcutaneous_tissue
+681,skin_subcutaneous_tissue
+682,skin_subcutaneous_tissue
+683,skin_subcutaneous_tissue
+684,skin_subcutaneous_tissue
+685,skin_subcutaneous_tissue
+686,skin_subcutaneous_tissue
+687,skin_subcutaneous_tissue
+688,skin_subcutaneous_tissue
+689,skin_subcutaneous_tissue
+690,skin_subcutaneous_tissue
+691,skin_subcutaneous_tissue
+692,skin_subcutaneous_tissue
+693,skin_subcutaneous_tissue
+694,skin_subcutaneous_tissue
+695,skin_subcutaneous_tissue
+696,skin_subcutaneous_tissue
+697,skin_subcutaneous_tissue
+698,skin_subcutaneous_tissue
+699,skin_subcutaneous_tissue
+700,skin_subcutaneous_tissue
+701,skin_subcutaneous_tissue
+702,skin_subcutaneous_tissue
+703,skin_subcutaneous_tissue
+704,skin_subcutaneous_tissue
+705,skin_subcutaneous_tissue
+706,skin_subcutaneous_tissue
+707,skin_subcutaneous_tissue
+708,skin_subcutaneous_tissue
+709,skin_subcutaneous_tissue
+710,musculoskeletal system
+711,musculoskeletal system
+712,musculoskeletal system
+713,musculoskeletal system
+714,musculoskeletal system
+715,musculoskeletal system
+716,musculoskeletal system
+717,musculoskeletal system
+718,musculoskeletal system
+719,musculoskeletal system
+720,musculoskeletal system
+721,musculoskeletal system
+722,musculoskeletal system
+723,musculoskeletal system
+724,musculoskeletal system
+725,musculoskeletal system
+726,musculoskeletal system
+727,musculoskeletal system
+728,musculoskeletal system
+729,musculoskeletal system
+730,musculoskeletal system
+731,musculoskeletal system
+732,musculoskeletal system
+733,musculoskeletal system
+734,musculoskeletal system
+735,musculoskeletal system
+736,musculoskeletal system
+737,musculoskeletal system
+738,musculoskeletal system
+739,musculoskeletal system
+740,congenital anomalies
+741,congenital anomalies
+742,congenital anomalies
+743,congenital anomalies
+744,congenital anomalies
+745,congenital anomalies
+746,congenital anomalies
+747,congenital anomalies
+748,congenital anomalies
+749,congenital anomalies
+750,congenital anomalies
+751,congenital anomalies
+752,congenital anomalies
+753,congenital anomalies
+754,congenital anomalies
+755,congenital anomalies
+756,congenital anomalies
+757,congenital anomalies
+758,congenital anomalies
+759,congenital anomalies
+760,perinatal period
+761,perinatal period
+762,perinatal period
+763,perinatal period
+764,perinatal period
+765,perinatal period
+766,perinatal period
+767,perinatal period
+768,perinatal period
+769,perinatal period
+770,perinatal period
+771,perinatal period
+772,perinatal period
+773,perinatal period
+774,perinatal period
+775,perinatal period
+776,perinatal period
+777,perinatal period
+778,perinatal period
+779,perinatal period
+780,ill-defined conditions
+781,ill-defined conditions
+782,ill-defined conditions
+783,ill-defined conditions
+784,ill-defined conditions
+785,ill-defined conditions
+786,ill-defined conditions
+787,ill-defined conditions
+788,ill-defined conditions
+789,ill-defined conditions
+790,ill-defined conditions
+791,ill-defined conditions
+792,ill-defined conditions
+793,ill-defined conditions
+794,ill-defined conditions
+795,ill-defined conditions
+796,ill-defined conditions
+797,ill-defined conditions
+798,ill-defined conditions
+799,ill-defined conditions
+800,injury_poisoning
+801,injury_poisoning
+802,injury_poisoning
+803,injury_poisoning
+804,injury_poisoning
+805,injury_poisoning
+806,injury_poisoning
+807,injury_poisoning
+808,injury_poisoning
+809,injury_poisoning
+810,injury_poisoning
+811,injury_poisoning
+812,injury_poisoning
+813,injury_poisoning
+814,injury_poisoning
+815,injury_poisoning
+816,injury_poisoning
+817,injury_poisoning
+818,injury_poisoning
+819,injury_poisoning
+820,injury_poisoning
+821,injury_poisoning
+822,injury_poisoning
+823,injury_poisoning
+824,injury_poisoning
+825,injury_poisoning
+826,injury_poisoning
+827,injury_poisoning
+828,injury_poisoning
+829,injury_poisoning
+830,injury_poisoning
+831,injury_poisoning
+832,injury_poisoning
+833,injury_poisoning
+834,injury_poisoning
+835,injury_poisoning
+836,injury_poisoning
+837,injury_poisoning
+838,injury_poisoning
+839,injury_poisoning
+840,injury_poisoning
+841,injury_poisoning
+842,injury_poisoning
+843,injury_poisoning
+844,injury_poisoning
+845,injury_poisoning
+846,injury_poisoning
+847,injury_poisoning
+848,injury_poisoning
+849,injury_poisoning
+850,injury_poisoning
+851,injury_poisoning
+852,injury_poisoning
+853,injury_poisoning
+854,injury_poisoning
+855,injury_poisoning
+856,injury_poisoning
+857,injury_poisoning
+858,injury_poisoning
+859,injury_poisoning
+860,injury_poisoning
+861,injury_poisoning
+862,injury_poisoning
+863,injury_poisoning
+864,injury_poisoning
+865,injury_poisoning
+866,injury_poisoning
+867,injury_poisoning
+868,injury_poisoning
+869,injury_poisoning
+870,injury_poisoning
+871,injury_poisoning
+872,injury_poisoning
+873,injury_poisoning
+874,injury_poisoning
+875,injury_poisoning
+876,injury_poisoning
+877,injury_poisoning
+878,injury_poisoning
+879,injury_poisoning
+880,injury_poisoning
+881,injury_poisoning
+882,injury_poisoning
+883,injury_poisoning
+884,injury_poisoning
+885,injury_poisoning
+886,injury_poisoning
+887,injury_poisoning
+888,injury_poisoning
+889,injury_poisoning
+890,injury_poisoning
+891,injury_poisoning
+892,injury_poisoning
+893,injury_poisoning
+894,injury_poisoning
+895,injury_poisoning
+896,injury_poisoning
+897,injury_poisoning
+898,injury_poisoning
+899,injury_poisoning
+900,injury_poisoning
+901,injury_poisoning
+902,injury_poisoning
+903,injury_poisoning
+904,injury_poisoning
+905,injury_poisoning
+906,injury_poisoning
+907,injury_poisoning
+908,injury_poisoning
+909,injury_poisoning
+910,injury_poisoning
+911,injury_poisoning
+912,injury_poisoning
+913,injury_poisoning
+914,injury_poisoning
+915,injury_poisoning
+916,injury_poisoning
+917,injury_poisoning
+918,injury_poisoning
+919,injury_poisoning
+920,injury_poisoning
+921,injury_poisoning
+922,injury_poisoning
+923,injury_poisoning
+924,injury_poisoning
+925,injury_poisoning
+926,injury_poisoning
+927,injury_poisoning
+928,injury_poisoning
+929,injury_poisoning
+930,injury_poisoning
+931,injury_poisoning
+932,injury_poisoning
+933,injury_poisoning
+934,injury_poisoning
+935,injury_poisoning
+936,injury_poisoning
+937,injury_poisoning
+938,injury_poisoning
+939,injury_poisoning
+940,injury_poisoning
+941,injury_poisoning
+942,injury_poisoning
+943,injury_poisoning
+944,injury_poisoning
+945,injury_poisoning
+946,injury_poisoning
+947,injury_poisoning
+948,injury_poisoning
+949,injury_poisoning
+950,injury_poisoning
+951,injury_poisoning
+952,injury_poisoning
+953,injury_poisoning
+954,injury_poisoning
+955,injury_poisoning
+956,injury_poisoning
+957,injury_poisoning
+958,injury_poisoning
+959,injury_poisoning
+960,injury_poisoning
+961,injury_poisoning
+962,injury_poisoning
+963,injury_poisoning
+964,injury_poisoning
+965,injury_poisoning
+966,injury_poisoning
+967,injury_poisoning
+968,injury_poisoning
+969,injury_poisoning
+970,injury_poisoning
+971,injury_poisoning
+972,injury_poisoning
+973,injury_poisoning
+974,injury_poisoning
+975,injury_poisoning
+976,injury_poisoning
+977,injury_poisoning
+978,injury_poisoning
+979,injury_poisoning
+980,injury_poisoning
+981,injury_poisoning
+982,injury_poisoning
+983,injury_poisoning
+984,injury_poisoning
+985,injury_poisoning
+986,injury_poisoning
+987,injury_poisoning
+988,injury_poisoning
+989,injury_poisoning
+990,injury_poisoning
+991,injury_poisoning
+992,injury_poisoning
+993,injury_poisoning
+994,injury_poisoning
+995,injury_poisoning
+996,injury_poisoning
+997,injury_poisoning
+998,injury_poisoning
+999,injury_poisoning
+V01,health service contact
+V02,health service contact
+V03,health service contact
+V04,health service contact
+V05,health service contact
+V06,health service contact
+V07,health service contact
+V08,health service contact
+V09,health service contact
+V10,health service contact
+V11,health service contact
+V12,health service contact
+V13,health service contact
+V14,health service contact
+V15,health service contact
+V16,health service contact
+V17,health service contact
+V18,health service contact
+V19,health service contact
+V20,health service contact
+V21,health service contact
+V22,health service contact
+V23,health service contact
+V24,health service contact
+V25,health service contact
+V26,health service contact
+V27,health service contact
+V28,health service contact
+V29,health service contact
+V30,health service contact
+V31,health service contact
+V32,health service contact
+V33,health service contact
+V34,health service contact
+V35,health service contact
+V36,health service contact
+V37,health service contact
+V38,health service contact
+V39,health service contact
+V40,health service contact
+V41,health service contact
+V42,health service contact
+V43,health service contact
+V44,health service contact
+V45,health service contact
+V46,health service contact
+V47,health service contact
+V48,health service contact
+V49,health service contact
+V50,health service contact
+V51,health service contact
+V52,health service contact
+V53,health service contact
+V54,health service contact
+V55,health service contact
+V56,health service contact
+V57,health service contact
+V58,health service contact
+V59,health service contact
+V60,health service contact
+V61,health service contact
+V62,health service contact
+V63,health service contact
+V64,health service contact
+V65,health service contact
+V66,health service contact
+V67,health service contact
+V68,health service contact
+V69,health service contact
+V70,health service contact
+V71,health service contact
+V72,health service contact
+V73,health service contact
+V74,health service contact
+V75,health service contact
+V76,health service contact
+V77,health service contact
+V78,health service contact
+V79,health service contact
+V80,health service contact
+V81,health service contact
+V82,health service contact
+V83,health service contact
+V84,health service contact
+V85,health service contact
+V86,health service contact
+V87,health service contact
+V88,health service contact
+V89,health service contact
+V90,health service contact
+V91,health service contact
+V92,health service contact
+V93,health service contact
+V94,health service contact
+V95,health service contact
+V96,health service contact
+V97,health service contact
+V98,health service contact
+V99,health service contact
+E800,external causes
+E801,external causes
+E802,external causes
+E803,external causes
+E804,external causes
+E805,external causes
+E806,external causes
+E807,external causes
+E808,external causes
+E809,external causes
+E810,external causes
+E811,external causes
+E812,external causes
+E813,external causes
+E814,external causes
+E815,external causes
+E816,external causes
+E817,external causes
+E818,external causes
+E819,external causes
+E820,external causes
+E821,external causes
+E822,external causes
+E823,external causes
+E824,external causes
+E825,external causes
+E826,external causes
+E827,external causes
+E828,external causes
+E829,external causes
+E830,external causes
+E831,external causes
+E832,external causes
+E833,external causes
+E834,external causes
+E835,external causes
+E836,external causes
+E837,external causes
+E838,external causes
+E839,external causes
+E840,external causes
+E841,external causes
+E842,external causes
+E843,external causes
+E844,external causes
+E845,external causes
+E846,external causes
+E847,external causes
+E848,external causes
+E849,external causes
+E850,external causes
+E851,external causes
+E852,external causes
+E853,external causes
+E854,external causes
+E855,external causes
+E856,external causes
+E857,external causes
+E858,external causes
+E859,external causes
+E860,external causes
+E861,external causes
+E862,external causes
+E863,external causes
+E864,external causes
+E865,external causes
+E866,external causes
+E867,external causes
+E868,external causes
+E869,external causes
+E870,external causes
+E871,external causes
+E872,external causes
+E873,external causes
+E874,external causes
+E875,external causes
+E876,external causes
+E877,external causes
+E878,external causes
+E879,external causes
+E880,external causes
+E881,external causes
+E882,external causes
+E883,external causes
+E884,external causes
+E885,external causes
+E886,external causes
+E887,external causes
+E888,external causes
+E889,external causes
+E890,external causes
+E891,external causes
+E892,external causes
+E893,external causes
+E894,external causes
+E895,external causes
+E896,external causes
+E897,external causes
+E898,external causes
+E899,external causes
+E900,external causes
+E901,external causes
+E902,external causes
+E903,external causes
+E904,external causes
+E905,external causes
+E906,external causes
+E907,external causes
+E908,external causes
+E909,external causes
+E910,external causes
+E911,external causes
+E912,external causes
+E913,external causes
+E914,external causes
+E915,external causes
+E916,external causes
+E917,external causes
+E918,external causes
+E919,external causes
+E920,external causes
+E921,external causes
+E922,external causes
+E923,external causes
+E924,external causes
+E925,external causes
+E926,external causes
+E927,external causes
+E928,external causes
+E929,external causes
+E930,external causes
+E931,external causes
+E932,external causes
+E933,external causes
+E934,external causes
+E935,external causes
+E936,external causes
+E937,external causes
+E938,external causes
+E939,external causes
+E940,external causes
+E941,external causes
+E942,external causes
+E943,external causes
+E944,external causes
+E945,external causes
+E946,external causes
+E947,external causes
+E948,external causes
+E949,external causes
+E950,external causes
+E951,external causes
+E952,external causes
+E953,external causes
+E954,external causes
+E955,external causes
+E956,external causes
+E957,external causes
+E958,external causes
+E959,external causes
+E960,external causes
+E961,external causes
+E962,external causes
+E963,external causes
+E964,external causes
+E965,external causes
+E966,external causes
+E967,external causes
+E968,external causes
+E969,external causes
+E970,external causes
+E971,external causes
+E972,external causes
+E973,external causes
+E974,external causes
+E975,external causes
+E976,external causes
+E977,external causes
+E978,external causes
+E979,external causes
+E980,external causes
+E981,external causes
+E982,external causes
+E983,external causes
+E984,external causes
+E985,external causes
+E986,external causes
+E987,external causes
+E988,external causes
+E989,external causes
+E990,external causes
+E991,external causes
+E992,external causes
+E993,external causes
+E994,external causes
+E995,external causes
+E996,external causes
+E997,external causes
+E998,external causes
+E999,external causes
+NA,Not Available
+ND,Not determined
